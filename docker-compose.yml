@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: [
+        "CMD-SHELL",
+        "pg_isready -h postgres -t 5 -U ${POSTGRES_USER} || false"
+      ]
+      interval: 1s
+      timeout: 5s
+      retries: 10
+    networks:
+      - local-apps
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+
+
+networks:
+  local-apps:
+    external: true
